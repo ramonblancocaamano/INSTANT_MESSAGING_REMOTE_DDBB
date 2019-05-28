@@ -131,7 +131,6 @@ public class SwingClient {
             
             entities = topicManager.mySubscriptions();
             for (entity.Subscriber entity : entities) {
-                topicManager.subscribe(entity.getTopic(), suscriber);
                 my_subscriptions.put(entity.getTopic(), suscriber);
                 
                 messages = topicManager.messagesFrom(entity.getTopic());

@@ -84,6 +84,7 @@ public class TopicManagerStub implements TopicManager {
             return check;
         }
         entity = new entity.Subscriber();
+        entity.setUser(user);
         entity.setTopic(topic);
         
         apiREST_Subscriber.createSubscriber(entity);
@@ -106,7 +107,9 @@ public class TopicManagerStub implements TopicManager {
         }
 
         entity = new entity.Subscriber();
+        entity.setUser(user);
         entity.setTopic(topic);
+        
         apiREST_Subscriber.deleteSubscriber(entity);        
         WebSocketClient.removeSubscriber(topic);
         check = new Subscription_check(topic, Subscription_check.Result.NO_SUBSCRIPTION);
@@ -122,6 +125,7 @@ public class TopicManagerStub implements TopicManager {
         entity = apiREST_Publisher.PublisherOf(user);
         if (entity != null) {
             publisher = new PublisherStub(entity.getTopic());
+            return publisher;
         }
         return null;
     }

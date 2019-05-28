@@ -131,7 +131,7 @@ public class WebSocketServer {
     private TopicFacadeREST lookupTopicFacadeRESTBean() {
         try {
             Context c = new InitialContext();
-            return (TopicFacadeREST) c.lookup("java:global/InstantMessagingRemote_server_with_ddbb/TopicFacadeREST!entity.service.TopicFacadeREST");
+            return (TopicFacadeREST) c.lookup("java:global/SERVER/TopicFacadeREST!entity.service.TopicFacadeREST");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
