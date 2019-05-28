@@ -118,17 +118,31 @@ public class SwingClient {
      * It restore user's profile. 
      */
     private void clientSetup() {
+        List<entity.Subscriber> entities;
+        List<Message> messages;
         showTopicsHandler showTopics = new showTopicsHandler();
         showPublishersHandler showPublishers = new showPublishersHandler();
         
         suscriber = new SubscriberImpl(this);
         publisher = topicManager.publisherOf();
         
-        publisherTopic = publisher.topic();
-        
-        showTopics.actionPerformed(e);
-        showPublishers.actionPerformed(e);
-
+        if (publisher != null) {
+            publisherTopic = publisher.topic();
+            
+            entities = topicManager.mySubscriptions();
+            for (entity.Subscriber entity : entities) {
+                topicManager.subscribe(entity.getTopic(), suscriber);
+                my_subscriptions.put(entity.getTopic(), suscriber);
+                
+                messages = topicManager.messagesFrom(entity.getTopic());
+                for (Message message : messages) {
+                    messages_TextArea.append(message.getTopic().getName() + " : " + message.getContent() + "\n");
+                }           
+            }
+            
+            showTopics.actionPerformed(e);
+            showPublishers.actionPerformed(e);
+        }
     }
 
     class showTopicsHandler implements ActionListener {
@@ -236,7 +250,7 @@ public class SwingClient {
             topic = new Topic(text);
 
             hasTopic = my_subscriptions.containsKey(topic);
-            if (hasTopic == false) {
+            if (!hasTopic) {
                 check = topicManager.subscribe(topic, suscriber);
                 if (check.result == Subscription_check.Result.OKAY) {
                     my_subscriptions.put(topic, suscriber);
@@ -261,7 +275,7 @@ public class SwingClient {
             topic = new Topic(text);
 
             hasTopic = my_subscriptions.containsKey(topic);
-            if (hasTopic == true) {
+            if (hasTopic) {
                 check = topicManager.unsubscribe(topic, suscriber);
                 if (check.result == Subscription_check.Result.NO_SUBSCRIPTION) {
                     my_subscriptions.remove(topic, suscriber);

@@ -69,9 +69,4 @@ public class Publisher implements Serializable {
     public String toString() {
         return "entity.Publisher[ id=" + id + " ]";
     }
-
-    public Object topic() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

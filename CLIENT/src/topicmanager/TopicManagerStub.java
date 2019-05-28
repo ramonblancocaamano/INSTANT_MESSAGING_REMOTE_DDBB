@@ -45,14 +45,14 @@ public class TopicManagerStub implements TopicManager {
 
     @Override
     public void removePublisherFromTopic(Topic topic) {
-        entity.Publisher publisher;
+        entity.Publisher entity;
         Boolean hasTopic; 
         
-        publisher =  apiREST_Publisher.PublisherOf(user);
-        hasTopic = publisher.topic().equals(topic);
+        entity =  apiREST_Publisher.PublisherOf(user);
+        hasTopic = entity.getTopic().equals(topic);
         
         if(hasTopic) {
-            apiREST_Publisher.deletePublisher(publisher);
+            apiREST_Publisher.deletePublisher(entity);
         }
     }
 
@@ -74,42 +74,56 @@ public class TopicManagerStub implements TopicManager {
 
     @Override
     public Subscription_check subscribe(Topic topic, Subscriber subscriber) {
-        Subscription_check subs_check;
-        Topic_check topic_check;
+        entity.Subscriber entity;
+        Subscription_check check;
+        boolean open;
 
-        topic_check = isTopic(topic);
-        if (topic_check.isOpen == false) {
-            subs_check = new Subscription_check(topic, Subscription_check.Result.NO_TOPIC);
-            return subs_check;
+        open = isTopic(topic).isOpen;
+        if (!open) {
+            check = new Subscription_check(topic, Subscription_check.Result.NO_TOPIC);
+            return check;
         }
-
+        entity = new entity.Subscriber();
+        entity.setTopic(topic);
+        
+        apiREST_Subscriber.createSubscriber(entity);
         WebSocketClient.addSubscriber(topic, subscriber);
-        subs_check = new Subscription_check(topic, Subscription_check.Result.OKAY);
-        return subs_check;
+        check = new Subscription_check(topic, Subscription_check.Result.OKAY);
+        
+        return check;   
     }
 
     @Override
     public Subscription_check unsubscribe(Topic topic, Subscriber subscriber) {
-        Subscription_check subs_check;
-        Topic_check topic_check;
+        entity.Subscriber entity;
+        Subscription_check check;
+        boolean open;
 
-        topic_check = isTopic(topic);
-        if (topic_check.isOpen == false) {
-            subs_check = new Subscription_check(topic, Subscription_check.Result.NO_TOPIC);
-            return subs_check;
+        open = isTopic(topic).isOpen;
+        if (!open) {
+            check = new Subscription_check(topic, Subscription_check.Result.NO_TOPIC);
+            return check;
         }
 
+        entity = new entity.Subscriber();
+        entity.setTopic(topic);
+        apiREST_Subscriber.deleteSubscriber(entity);        
         WebSocketClient.removeSubscriber(topic);
-        subs_check = new Subscription_check(topic, Subscription_check.Result.NO_SUBSCRIPTION);
-        return subs_check;
+        check = new Subscription_check(topic, Subscription_check.Result.NO_SUBSCRIPTION);
+        
+        return check;
     }
 
     @Override
     public Publisher publisherOf() {
+        entity.Publisher entity;
         Publisher publisher;
         
-        publisher = (Publisher) apiREST_Publisher.PublisherOf(user);
-        return publisher;
+        entity = apiREST_Publisher.PublisherOf(user);
+        if (entity != null) {
+            publisher = new PublisherStub(entity.getTopic());
+        }
+        return null;
     }
 
     @Override
